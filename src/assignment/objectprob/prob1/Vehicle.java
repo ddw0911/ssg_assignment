@@ -16,8 +16,8 @@ public class Vehicle{
 
   @Override
   public boolean equals(Object obj) {
-    if (this.getOwner().equals(obj)) {
-      return true;
+    if (obj instanceof Vehicle vehicle) {
+      return this.getOwner().getName().equals(vehicle.getOwner().getName());
     }
     return false;
   }
