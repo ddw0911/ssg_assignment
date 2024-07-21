@@ -1,5 +1,6 @@
 package assignment.board.crud;
 
+import static assignment.board.CommonResource.boardCount;
 import static assignment.board.CommonResource.boardList;
 import static assignment.board.CommonResource.br;
 import static assignment.board.PrintMenu.confirmMenu;
@@ -22,17 +23,18 @@ public class Create {
     System.out.println("----------------------------------------------------------------");
 
     if (confirmMenu()) {
-      board.setNo(boardList.size() + 1);
+      board.setNo(boardCount);
       board.setDate(Date.valueOf(LocalDate.now()));
       System.out.println("입력되었습니다.");
       boardList.add(board);
+      boardCount++;
     } else {
       System.out.println("입력이 취소되었습니다.");
     }
     System.out.println();
   }
 
-  //입력필수항목 처리 메서드
+  //항목 필수입력처리 메서드
   static String inputRequired(String subject) {
     String input;
     while (true) {

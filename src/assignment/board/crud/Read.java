@@ -37,6 +37,7 @@ public class Read {
     }
   }
 
+  // 게시물을 찾았을 때 다음메뉴
   static void nextMenu(Board board) {
     System.out.println("보조 메뉴: 1. Update | 2. Delete | 3. List");
     System.out.print("메뉴 선택: ");
