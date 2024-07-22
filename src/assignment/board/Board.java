@@ -34,7 +34,7 @@ public class Board {
   }
 
   //게시물 목록 출력
-  static void list() {
+  static void  showList() {
     boardList.sort(Comparator.comparing(Board::getNo).reversed());
     boardList.forEach(System.out::println);
   }

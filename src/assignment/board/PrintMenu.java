@@ -1,10 +1,11 @@
 package assignment.board;
 
-import static assignment.board.Board.list;
+import static assignment.board.Board.showList;
 import static assignment.board.BoardExample.br;
-import static assignment.board.crud.Create.create;
-import static assignment.board.crud.Delete.clear;
-import static assignment.board.crud.Read.read;
+import static assignment.board.jdbccrud.Create.create;
+import static assignment.board.jdbccrud.Delete.clear;
+import static assignment.board.jdbccrud.Read.read;
+
 import java.io.IOException;
 
 public class PrintMenu {
@@ -15,7 +16,7 @@ public class PrintMenu {
       System.out.println("----------------------------------------------------------------");
       System.out.println("no\t\twriter\t\t\t\tdate\t\t\t\t\t\t\t\ttitle");
       System.out.println("----------------------------------------------------------------");
-      list();
+      showList();
       System.out.println("메인 메뉴 : 1.Create | 2.Read | 3.Clear | 4.Exit");
       System.out.print("메뉴 선택 : ");
 
@@ -57,6 +58,8 @@ public class PrintMenu {
         }
       } catch (IOException e) {
         throw new RuntimeException(e);
+      } catch (NumberFormatException | NullPointerException e) {
+        System.out.println("오류: 메뉴를 선택해주세요.\n");
       }
     }
   }

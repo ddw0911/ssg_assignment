@@ -1,8 +1,10 @@
-package assignment.board.crud;
+package assignment.board.jdbccrud;
 
+import static assignment.board.PrintMenu.mainMenu;
 import static assignment.board.CommonResource.boardList;
 import static assignment.board.CommonResource.br;
-import static assignment.board.PrintMenu.mainMenu;
+import static assignment.board.jdbccrud.Delete.delete;
+import static assignment.board.jdbccrud.Update.update;
 
 import assignment.board.Board;
 import java.io.IOException;

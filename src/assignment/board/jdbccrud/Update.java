@@ -1,4 +1,4 @@
-package assignment.board.crud;
+package assignment.board.jdbccrud;
 
 import static assignment.board.PrintMenu.confirmMenu;
 import static assignment.board.jdbccrud.Create.inputRequired;
