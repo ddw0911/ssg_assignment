@@ -1,11 +1,11 @@
 package assignment.board.crud;
 
-import static assignment.board.CommonResource.boardCount;
-import static assignment.board.CommonResource.boardList;
-import static assignment.board.CommonResource.br;
-import static assignment.board.PrintMenu.confirmMenu;
+import static assignment.board.dto.CommonResource.boardCount;
+import static assignment.board.dto.CommonResource.boardList;
+import static assignment.board.dto.CommonResource.br;
+import static assignment.board.dto.ConfirmChoice.confirmMenu;
 
-import assignment.board.Board;
+import assignment.board.dto.Board;
 import java.io.IOException;
 import java.sql.Date;
 import java.time.LocalDate;
@@ -35,7 +35,7 @@ public class Create {
   }
 
   //항목 필수입력처리 메서드
-  static String inputRequired(String subject) {
+  public static String inputRequired(String subject) {
     String input;
     while (true) {
       try {

@@ -1,9 +1,9 @@
 package assignment.board.crud;
 
-import static assignment.board.PrintMenu.confirmMenu;
-import static assignment.board.jdbccrud.Create.inputRequired;
+import static assignment.board.dto.ConfirmChoice.confirmMenu;
+import static assignment.board.jdbc.CRUD.inputRequired;
 
-import assignment.board.Board;
+import assignment.board.dto.Board;
 
 public class Update {
 

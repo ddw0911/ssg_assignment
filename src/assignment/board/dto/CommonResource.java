@@ -1,4 +1,4 @@
-package assignment.board;
+package assignment.board.dto;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

@@ -1,10 +1,12 @@
 package assignment.board.crud;
 
-import static assignment.board.CommonResource.boardList;
-import static assignment.board.CommonResource.br;
-import static assignment.board.PrintMenu.mainMenu;
+import static assignment.board.crud.Delete.delete;
+import static assignment.board.crud.Update.update;
+import static assignment.board.dto.CommonResource.boardList;
+import static assignment.board.dto.CommonResource.br;
+import static assignment.board.dto.MainMenu.mainMenu;
 
-import assignment.board.Board;
+import assignment.board.dto.Board;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;

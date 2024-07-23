@@ -1,9 +1,9 @@
 package assignment.board.crud;
 
-import static assignment.board.CommonResource.boardList;
-import static assignment.board.PrintMenu.confirmMenu;
+import static assignment.board.dto.CommonResource.boardList;
+import static assignment.board.dto.ConfirmChoice.confirmMenu;
 
-import assignment.board.Board;
+import assignment.board.dto.Board;
 
 public class Delete {
 

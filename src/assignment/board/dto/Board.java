@@ -1,8 +1,9 @@
-package assignment.board;
+package assignment.board.dto;
 
-import static assignment.board.CommonResource.boardList;
+import static assignment.board.jdbc.Connection.close;
+import static assignment.board.jdbc.Connection.connect;
+import static assignment.board.jdbc.QueryProcessor.processQuery;
 
-import java.util.Comparator;
 import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -34,8 +35,12 @@ public class Board {
   }
 
   //게시물 목록 출력
-  static void  showList() {
-    boardList.sort(Comparator.comparing(Board::getNo).reversed());
-    boardList.forEach(System.out::println);
+  static void  showBoardList() {
+    String query = "SELECT * FROM board";
+    connect();
+    processQuery.executeQuery(query);
+    close();
+//    boardList.sort(Comparator.comparing(Board::getNo).reversed());
+//    boardList.forEach(System.out::println);
   }
 }
