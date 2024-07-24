@@ -1,42 +1,25 @@
 package assignment.board.jdbc;
 
-import static assignment.board.dto.ConfirmChoice.checkAgain;
-import static assignment.board.dto.ConfirmChoice.checkBoardIsEmpty;
-import static assignment.board.dto.ConfirmChoice.confirmMenu;
-import static assignment.board.dto.CommonResource.br;
 import static assignment.board.dto.MainMenu.mainMenu;
-import static assignment.board.jdbc.Connection.close;
-import static assignment.board.jdbc.Connection.connect;
-import static assignment.board.jdbc.Connection.connection;
+import static assignment.board.jdbc.ConnectionFac.close;
+import static assignment.board.jdbc.ConnectionFac.connect;
 import static assignment.board.jdbc.QueryProcessor.processQuery;
+import static assignment.board.util.UtilMethod.confirmMenu;
+import static assignment.board.util.UtilMethod.deleteCheckAgain;
+import static assignment.board.util.UtilMethod.inputRequired;
 
 import assignment.board.vo.Message;
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.sql.SQLException;
+import java.io.InputStreamReader;
 import java.time.LocalDate;
 
 public class CRUD {
 
-  public static void startBoard() {
-
-    String query = "CREATE table if not exists board("
-        + "id int unsigned not null auto_increment primary key,"
-        + "title varchar(50) not null,"
-        + "content varchar(255) not null,"
-        + "writer varchar(30) not null,"
-        + "date date not null);";
-
-    try {
-      connect();
-      processQuery.executeQuery(query);
-      connection.close();
-    } catch (SQLException e) {
-      System.out.println(e.getMessage());
-    }
-  }
+  public static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
   public static void create() {
-    String query = "INSERT INTO board VALUES(?,?,?,?,?)";
+    String query = "INSERT INTO board (title, content, writer, date) VALUES(?,?,?,?)";
     Message.INPUT_NEW_BOARD.getMessage();
     connect();
     processQuery.executeQuery(query);
@@ -45,9 +28,9 @@ public class CRUD {
 
   public static void read() {
     try {
+      Message.SEARCH_BOARD.getMessage();
       int searchBoard = Integer.parseInt(br.readLine());
       String query = "SELECT * FROM board where no=" + searchBoard;
-      Message.SEARCH_BOARD.getMessage();
 
       connect();
       processQuery.executeQuery(query);
@@ -58,7 +41,7 @@ public class CRUD {
   }
 
   // 게시물을 찾았을때 실행되는 메뉴
-  public static void nextMenu(int boardNo) {
+  public static void readSecondMenu(int boardNo) {
     Message.READ_NEXT_MENU.getMessage();
     Message.CHOOSE_MENU.getMessage();
     try {
@@ -74,19 +57,22 @@ public class CRUD {
   }
 
   public static void update(int searchedBoardNo) {
+    int no = searchedBoardNo;
     String title = inputRequired("제목");
     String content = inputRequired("내용");
     String writer = inputRequired("작성자");
     LocalDate date = LocalDate.now();
-    StringBuilder query = new StringBuilder()
-        .append("UPDATE board SET title = " + title)
-        .append("content = " + content)
-        .append("writer = " + writer)
-        .append("date = " + date);
+    String query = new StringBuilder()
+        .append("UPDATE board SET title = '" + title)
+        .append("' ,content = '" + content)
+        .append("' ,writer = '" + writer)
+        .append("' ,date = '" + date)
+        .append("' where no = " + no)
+        .toString();
 
     if (confirmMenu()) {
       connect();
-      processQuery.executeQuery(String.valueOf(query));
+      processQuery.executeQuery(query);
       close();
       Message.UPDATE_SUCCESS.getMessage();
     } else {
@@ -95,10 +81,10 @@ public class CRUD {
   }
 
   public static void delete(int searchedBoardNo) {
-    String query = "DELETE * FROM board no = " + searchedBoardNo;
+    String query = "DELETE FROM board where no = " + searchedBoardNo;
     connect();
 
-    if (checkAgain()) {
+    if (deleteCheckAgain()) {
       processQuery.executeQuery(query);
       close();
       Message.DELETE_BOARD.getMessage();
@@ -108,38 +94,16 @@ public class CRUD {
   }
 
   public static void clear() {
-    String query = "DELETE * FROM board";
+    String query = "TRUNCATE table board";
 
-    if (!checkBoardIsEmpty()) {
-      if (checkAgain()) {
-        processQuery.executeQuery(query);
-        Message.CLEAR_BOARD.getMessage();
-      } else {
-        Message.ACTION_CANCEL.getMessage();
-      }
+    if (deleteCheckAgain()) {
+      connect();
+      processQuery.executeQuery(query);
+      close();
+      Message.CLEAR_BOARD.getMessage();
     } else {
-      Message.ALREADY_CLEAR.getMessage();
+      Message.ACTION_CANCEL.getMessage();
     }
-  }
-
-  //항목 필수입력처리 메서드
-  public static String inputRequired(String subject) {
-    String input;
-    while (true) {
-      try {
-        System.out.print(subject + ": ");
-        input = br.readLine();
-
-        if (input.trim().isBlank()) {
-          Message.INPUT_REQUIRED.getMessage();
-        } else {
-          break;
-        }
-      } catch (IOException e) {
-        throw new RuntimeException(e);
-      }
-    }
-    return input;
   }
 }
 

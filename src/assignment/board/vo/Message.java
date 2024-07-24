@@ -9,34 +9,33 @@ public enum Message {
   INPUT_SUCCESS("입력되었습니다.\n"),
   UPDATE_SUCCESS("수정되었습니다.\n"),
   ACTION_CANCEL("취소되었습니다.\n"),
-  WRONG_SELECT("올바른 메뉴번호를 입력하세요."),
-  PLEASE_SELECT("메뉴를 선택해주세요."),
-  INPUT_REQUIRED("입력은 필수입니다."),
-  BOARD_NOT_EXISTS("해당 게시물은 존재하지 않습니다."),
+  WRONG_SELECT("올바른 메뉴번호를 입력하세요.\n"),
+  PLEASE_SELECT("메뉴를 선택해주세요.\n"),
+  INPUT_REQUIRED("입력은 필수입니다.\n"),
+  BOARD_NOT_EXISTS("해당 게시물은 존재하지 않습니다.\n"),
 
   SEARCH_BOARD("[게시물 읽기]\nno: "),
-  EXIT_BOARD("**게시물 종료**"),
+  EXIT_BOARD("**게시물 종료**\n"),
 
   // 구분선
-  LINE("----------------------------------------------------------------"),
-  HASH_LINE("#########"),
+  LINE("----------------------------------------------------------------\n"),
+  HASH_LINE("#########\n"),
 
   // 메뉴관련
   SHOW_BOARDLIST("[게시물 목록]\n"
       + "----------------------------------------------------------------\n"
       + "no\t\twriter\t\t\t\tdate\t\t\t\t\t\t\t\ttitle\n"
-      + "----------------------------------------------------------------"),
-  SHOW_MENU("메인 메뉴 : 1.Create | 2.Read | 3.Clear | 4.Exit"),
-  CONFIRM_MENU("보조 메뉴: 1.OK | 2.Cancel"),
+      + "----------------------------------------------------------------\n"),
+  SHOW_MENU("메인 메뉴 : 1.Create | 2.Read | 3.Clear | 4.Exit\n"),
+  CONFIRM_MENU("보조 메뉴: 1.OK | 2.Cancel\n"),
   CHOOSE_MENU("메뉴 선택: "),
-  READ_NEXT_MENU("보조 메뉴: 1. Update | 2. Delete | 3. List"),
+  READ_NEXT_MENU("보조 메뉴: 1. Update | 2. Delete | 3. List\n"),
 
   //삭제관련
   DELETE_BOARD("게시물이 삭제되었습니다.\n"),
   CLEAR_BOARD("게시물 목록이 초기화되었습니다.\n"),
   ALREADY_CLEAR("이미 게시물이 초기화되었습니다.\n"),
   DELETE_CONFIRM("정말로 삭제하시겠습니까?\n")
-
   ;
 
   private final String message;
@@ -46,6 +45,6 @@ public enum Message {
   }
 
   public void getMessage() {
-    System.out.println(message);
+    System.out.print(message);
   }
 }

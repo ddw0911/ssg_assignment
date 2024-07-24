@@ -1,7 +1,7 @@
 package assignment.board.dto;
 
-import static assignment.board.jdbc.Connection.close;
-import static assignment.board.jdbc.Connection.connect;
+import static assignment.board.jdbc.ConnectionFac.close;
+import static assignment.board.jdbc.ConnectionFac.connect;
 import static assignment.board.jdbc.QueryProcessor.processQuery;
 
 import java.util.Date;
@@ -20,6 +20,7 @@ public class Board {
   private String writer;
   private Date date;
 
+//  public static int boardCount = 1;
 
   @Override
   public String toString() {
@@ -35,12 +36,10 @@ public class Board {
   }
 
   //게시물 목록 출력
-  static void  showBoardList() {
-    String query = "SELECT * FROM board";
+  public static void showBoardList() {
+    String query = "SELECT * FROM board ORDER BY no DESC";
     connect();
     processQuery.executeQuery(query);
     close();
-//    boardList.sort(Comparator.comparing(Board::getNo).reversed());
-//    boardList.forEach(System.out::println);
   }
 }

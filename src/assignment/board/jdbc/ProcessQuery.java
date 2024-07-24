@@ -11,4 +11,8 @@ public interface ProcessQuery {
   void readBoard(String query);
 
   void updateOrDeleteBoard(String query);
+
+  void clearBoard(String query);
+
+  void showBoardList(String query);
 }

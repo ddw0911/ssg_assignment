@@ -1,10 +1,10 @@
 package assignment.board.dto;
 
-import static assignment.board.crud.Read.read;
 import static assignment.board.dto.Board.showBoardList;
-import static assignment.board.dto.CommonResource.br;
+import static assignment.board.jdbc.CRUD.br;
 import static assignment.board.jdbc.CRUD.clear;
 import static assignment.board.jdbc.CRUD.create;
+import static assignment.board.jdbc.CRUD.read;
 
 import assignment.board.vo.Message;
 import java.io.IOException;
@@ -39,4 +39,6 @@ public class MainMenu {
       }
     }
   }
+
+
 }

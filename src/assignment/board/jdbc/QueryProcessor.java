@@ -1,10 +1,9 @@
 package assignment.board.jdbc;
 
-import static assignment.board.dto.ConfirmChoice.confirmMenu;
-import static assignment.board.dto.CommonResource.boardCount;
-import static assignment.board.jdbc.CRUD.inputRequired;
-import static assignment.board.jdbc.CRUD.nextMenu;
-import static assignment.board.jdbc.Connection.connection;
+import static assignment.board.jdbc.CRUD.readSecondMenu;
+import static assignment.board.jdbc.ConnectionFac.connection;
+import static assignment.board.util.UtilMethod.confirmMenu;
+import static assignment.board.util.UtilMethod.inputRequired;
 
 import assignment.board.dto.Board;
 import assignment.board.vo.Message;
@@ -20,6 +19,9 @@ public class QueryProcessor implements ProcessQuery {
 
   public static PreparedStatement pstmt;
 
+  public static ResultSet rs;
+
+  @Override
   public void executeQuery(String query) {
     try {
       pstmt = connection.prepareStatement(query);
@@ -29,6 +31,7 @@ public class QueryProcessor implements ProcessQuery {
     }
   }
 
+  @Override
   public void classifyQuery(String query) {
     try {
       if (query.contains("INSERT")) {
@@ -42,9 +45,15 @@ public class QueryProcessor implements ProcessQuery {
           Message.ACTION_CANCEL.getMessage();
         }
       } else if (query.contains("SELECT")) {
-        processQuery.readBoard(query);
+        if (query.contains("ORDER")) {
+          processQuery.showBoardList(query);
+        } else {
+          processQuery.readBoard(query);
+        }
       } else if (query.contains("UPDATE") || query.contains("DELETE")) {
         processQuery.updateOrDeleteBoard(query);
+      } else if (query.contains("TRUNCATE")) {
+        processQuery.clearBoard(query);
       } else {
         pstmt.executeUpdate();
         pstmt.close();
@@ -54,52 +63,83 @@ public class QueryProcessor implements ProcessQuery {
     }
   }
 
+  @Override
   public void createBoard(String query) {
     try {
-      pstmt.setInt(1, boardCount);
-      pstmt.setString(2, inputRequired("제목"));
-      pstmt.setString(3, inputRequired("내용"));
-      pstmt.setString(4, inputRequired("작성자"));
-      pstmt.setDate(5, Date.valueOf(LocalDate.now()));
-      boardCount++;
+      pstmt.setString(1, inputRequired("제목"));
+      pstmt.setString(2, inputRequired("내용"));
+      pstmt.setString(3, inputRequired("작성자"));
+      pstmt.setDate(4, Date.valueOf(LocalDate.now()));
     } catch (SQLException e) {
       throw new RuntimeException(e);
     }
   }
 
+  @Override
   public void readBoard(String query) {
     try {
-      ResultSet rs = pstmt.executeQuery(query);
-      if (String.valueOf(rs.getInt("no")) != null) {
+      rs = pstmt.executeQuery(query);
+
+      if (rs.next()) {
         Board board = new Board();
-        while (rs.next()) {
-          board.setNo(rs.getInt("no"));
-          board.setTitle(rs.getString("title"));
-          board.setContent(rs.getString("content"));
-          board.setWriter(rs.getString("writer"));
-          board.setDate(rs.getDate("date"));
-        }
+
+        board.setNo(rs.getInt("no"));
+        board.setTitle(rs.getString("title"));
+        board.setContent(rs.getString("content"));
+        board.setWriter(rs.getString("writer"));
+        board.setDate(rs.getDate("date"));
+
         rs.close();
         pstmt.close();
+
         Message.HASH_LINE.getMessage();
         board.getBoardInfo();
         Message.HASH_LINE.getMessage();
-        nextMenu(board.getNo());
+        readSecondMenu(board.getNo());
       } else {
         Message.BOARD_NOT_EXISTS.getMessage();
-        rs.close();
-        pstmt.close();
+      }
+    } catch (SQLException e) {
+      Message.BOARD_NOT_EXISTS.getMessage();
+    } catch (NullPointerException e) {
+      e.printStackTrace();
+    }
+  }
+
+  @Override
+  public void updateOrDeleteBoard(String query) {
+    try {
+      pstmt.execute(query);
+      pstmt.close();
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @Override
+  public void showBoardList(String query) {
+
+    try {
+      rs = pstmt.executeQuery();
+      while (rs.next()) {
+        Board board = new Board();
+        board.setNo(rs.getInt("no"));
+        board.setTitle(rs.getString("title"));
+        board.setContent(rs.getString("content"));
+        board.setWriter(rs.getString("writer"));
+        board.setDate(rs.getDate("date"));
+        System.out.println(board);
       }
     } catch (SQLException e) {
       throw new RuntimeException(e);
     } catch (NullPointerException e) {
-      e.getMessage();
     }
   }
 
-  public void updateOrDeleteBoard(String query) {
+  @Override
+  public void clearBoard(String query) {
     try {
-      pstmt.executeUpdate(query);
+      pstmt.execute(query);
       pstmt.close();
     } catch (SQLException e) {
       throw new RuntimeException(e);

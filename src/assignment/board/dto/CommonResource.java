@@ -7,9 +7,6 @@ import java.util.List;
 
 public class CommonResource {
 
-  public static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-  public static List<Board> boardList = new ArrayList<>();
-  public static int boardCount = 1;
 
 
 }
