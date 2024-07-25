@@ -9,10 +9,30 @@ import assignment.board.vo.Message;
 import java.io.IOException;
 import java.sql.SQLException;
 
-public class UtilMethod {
+public class UtilMethod implements Util{
+
+  public static Util util = new UtilMethod();
+  // Board table이 없을 때 생성해주는 메서드
+  public void startBoard() {
+
+    String query = "CREATE table if not exists board("
+        + "no int unsigned not null auto_increment primary key,"
+        + "title varchar(50) not null,"
+        + "content varchar(255) not null,"
+        + "writer varchar(30) not null,"
+        + "date date not null);";
+
+    try {
+      connect();
+      processQuery.executeQuery(query);
+      connection.close();
+    } catch (SQLException e) {
+      System.out.println(e.getMessage());
+    }
+  }
 
   //항목 필수입력처리 메서드
-  public static String inputRequired(String subject) {
+  public String inputRequired(String subject) {
     String input;
     while (true) {
       try {
@@ -31,32 +51,12 @@ public class UtilMethod {
     return input;
   }
 
-  // Board table이 없을때 생성해주는 메서드
-  public static void startBoard() {
-
-    String query = "CREATE table if not exists board("
-        + "no int unsigned not null auto_increment primary key,"
-        + "title varchar(50) not null,"
-        + "content varchar(255) not null,"
-        + "writer varchar(30) not null,"
-        + "date date not null);";
-
-    try {
-      connect();
-      processQuery.executeQuery(query);
-      connection.close();
-    } catch (SQLException e) {
-      System.out.println(e.getMessage());
-    }
-  }
-
   // 보조메뉴(확인, 취소) 메서드
-  public static boolean confirmMenu() {
+  public boolean confirmMenu() {
     while (true) {
       Message.CONFIRM_MENU.getMessage();
-      Message.CHOOSE_MENU.getMessage();
       try {
-        int select = Integer.parseInt(br.readLine());
+        int select = Integer.parseInt(util.inputRequired("메뉴선택"));
         if (select == 1) {
           return true;
         } else if (select == 2) {
@@ -64,8 +64,6 @@ public class UtilMethod {
         } else {
           Message.WRONG_SELECT.getMessage();
         }
-      } catch (IOException e) {
-        throw new RuntimeException(e);
       } catch (NumberFormatException | NullPointerException e) {
         Message.PLEASE_SELECT.getMessage();
       }
@@ -73,7 +71,7 @@ public class UtilMethod {
   }
 
   // 삭제를 재확인하는 메서드
-  public static boolean deleteCheckAgain() {
+  public boolean deleteCheckAgain() {
 
     Message.DELETE_CONFIRM.getMessage();
 

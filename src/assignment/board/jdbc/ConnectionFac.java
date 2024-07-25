@@ -7,8 +7,8 @@ import java.sql.SQLException;
 public class ConnectionFac {
 
   public static String url = "jdbc:mysql://localhost:3306/board";
-  public static String id = "root";
-  public static String pw = "root";
+  public static String id = "ssg";
+  public static String pw = "ssg";
   public static Connection connection;
 
   public static Connection connect() {

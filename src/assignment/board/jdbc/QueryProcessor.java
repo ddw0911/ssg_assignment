@@ -2,8 +2,7 @@ package assignment.board.jdbc;
 
 import static assignment.board.jdbc.CRUD.readSecondMenu;
 import static assignment.board.jdbc.ConnectionFac.connection;
-import static assignment.board.util.UtilMethod.confirmMenu;
-import static assignment.board.util.UtilMethod.inputRequired;
+import static assignment.board.util.UtilMethod.util;
 
 import assignment.board.dto.Board;
 import assignment.board.vo.Message;
@@ -34,29 +33,33 @@ public class QueryProcessor implements ProcessQuery {
   @Override
   public void classifyQuery(String query) {
     try {
-      if (query.contains("INSERT")) {
-        processQuery.createBoard(query);
-        Message.LINE.getMessage();
-        if (confirmMenu()) {
+      switch (getQueryType(query)) {
+        case "SHOW_BOARDLIST":
+          processQuery.showBoardList(query);
+          break;
+        case "INSERT":
+          processQuery.createBoard(query);
+          Message.LINE.getMessage();
+          if (util.confirmMenu()) {
+            pstmt.executeUpdate();
+            pstmt.close();
+            Message.INPUT_SUCCESS.getMessage();
+          } else {
+            Message.ACTION_CANCEL.getMessage();
+          }
+          break;
+        case "SELECT":
+          processQuery.readBoard(query);
+          break;
+        case "UPDATE":
+        case "DELETE":
+        case "TRUNCATE":
+          processQuery.updateOrDeleteBoard(query);
+          break;
+        default:
           pstmt.executeUpdate();
           pstmt.close();
-          Message.INPUT_SUCCESS.getMessage();
-        } else {
-          Message.ACTION_CANCEL.getMessage();
-        }
-      } else if (query.contains("SELECT")) {
-        if (query.contains("ORDER")) {
-          processQuery.showBoardList(query);
-        } else {
-          processQuery.readBoard(query);
-        }
-      } else if (query.contains("UPDATE") || query.contains("DELETE")) {
-        processQuery.updateOrDeleteBoard(query);
-      } else if (query.contains("TRUNCATE")) {
-        processQuery.clearBoard(query);
-      } else {
-        pstmt.executeUpdate();
-        pstmt.close();
+          break;
       }
     } catch (SQLException e) {
       System.out.println(e.getMessage());
@@ -64,11 +67,31 @@ public class QueryProcessor implements ProcessQuery {
   }
 
   @Override
+  public void showBoardList(String query) {
+
+    try {
+      rs = pstmt.executeQuery();
+      while (rs.next()) {
+        Board board = new Board();
+        board.setNo(rs.getInt("no"));
+        board.setTitle(rs.getString("title"));
+        board.setContent(rs.getString("content"));
+        board.setWriter(rs.getString("writer"));
+        board.setDate(rs.getDate("date"));
+        System.out.println(board);
+      }
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    } catch (NullPointerException e) {
+    }
+  }
+
+  @Override
   public void createBoard(String query) {
     try {
-      pstmt.setString(1, inputRequired("제목"));
-      pstmt.setString(2, inputRequired("내용"));
-      pstmt.setString(3, inputRequired("작성자"));
+      pstmt.setString(1, util.inputRequired("제목"));
+      pstmt.setString(2, util.inputRequired("내용"));
+      pstmt.setString(3, util.inputRequired("작성자"));
       pstmt.setDate(4, Date.valueOf(LocalDate.now()));
     } catch (SQLException e) {
       throw new RuntimeException(e);
@@ -116,33 +139,13 @@ public class QueryProcessor implements ProcessQuery {
     }
   }
 
-  @Override
-  public void showBoardList(String query) {
-
-    try {
-      rs = pstmt.executeQuery();
-      while (rs.next()) {
-        Board board = new Board();
-        board.setNo(rs.getInt("no"));
-        board.setTitle(rs.getString("title"));
-        board.setContent(rs.getString("content"));
-        board.setWriter(rs.getString("writer"));
-        board.setDate(rs.getDate("date"));
-        System.out.println(board);
-      }
-    } catch (SQLException e) {
-      throw new RuntimeException(e);
-    } catch (NullPointerException e) {
-    }
-  }
-
-  @Override
-  public void clearBoard(String query) {
-    try {
-      pstmt.execute(query);
-      pstmt.close();
-    } catch (SQLException e) {
-      throw new RuntimeException(e);
-    }
+  private static String getQueryType(String query) {
+    if (query.contains("SELECT * FROM board ORDER BY no DESC")) return "SHOW_BOARDLIST";
+    if (query.contains("INSERT")) return "INSERT";
+    if (query.contains("SELECT")) return "SELECT";
+    if (query.contains("UPDATE")) return "UPDATE";
+    if (query.contains("DELETE")) return "DELETE";
+    if (query.contains("TRUNCATE")) return "TRUNCATE";
+    return "DEFAULT";
   }
 }

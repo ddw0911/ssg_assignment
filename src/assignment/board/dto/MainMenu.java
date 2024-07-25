@@ -5,6 +5,7 @@ import static assignment.board.jdbc.CRUD.br;
 import static assignment.board.jdbc.CRUD.clear;
 import static assignment.board.jdbc.CRUD.create;
 import static assignment.board.jdbc.CRUD.read;
+import static assignment.board.util.UtilMethod.util;
 
 import assignment.board.vo.Message;
 import java.io.IOException;
@@ -16,10 +17,9 @@ public class MainMenu {
       Message.SHOW_BOARDLIST.getMessage();
       showBoardList();
       Message.SHOW_MENU.getMessage();
-      Message.CHOOSE_MENU.getMessage();
 
       try {
-        int select = Integer.parseInt(br.readLine());
+        int select = Integer.parseInt(util.inputRequired("메뉴 선택"));
         System.out.println();
 
         switch (select) {
@@ -32,8 +32,6 @@ public class MainMenu {
           }
           default -> Message.WRONG_SELECT.getMessage();
         }
-      } catch (IOException e) {
-        e.printStackTrace();
       } catch (NumberFormatException | NullPointerException e) {
         Message.PLEASE_SELECT.getMessage();
       }

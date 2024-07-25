@@ -4,9 +4,7 @@ import static assignment.board.dto.MainMenu.mainMenu;
 import static assignment.board.jdbc.ConnectionFac.close;
 import static assignment.board.jdbc.ConnectionFac.connect;
 import static assignment.board.jdbc.QueryProcessor.processQuery;
-import static assignment.board.util.UtilMethod.confirmMenu;
-import static assignment.board.util.UtilMethod.deleteCheckAgain;
-import static assignment.board.util.UtilMethod.inputRequired;
+import static assignment.board.util.UtilMethod.util;
 
 import assignment.board.vo.Message;
 import java.io.BufferedReader;
@@ -28,39 +26,35 @@ public class CRUD {
 
   public static void read() {
     try {
-      Message.SEARCH_BOARD.getMessage();
-      int searchBoard = Integer.parseInt(br.readLine());
+
+      Message.READ_BOARD.getMessage();
+      int searchBoard = Integer.parseInt(util.inputRequired("no"));
       String query = "SELECT * FROM board where no=" + searchBoard;
 
       connect();
       processQuery.executeQuery(query);
       close();
-    } catch (IOException e) {
-      throw new RuntimeException(e);
+    } catch (NullPointerException e) {
+      Message.PLEASE_SELECT.getMessage();
     }
   }
 
   // 게시물을 찾았을때 실행되는 메뉴
   public static void readSecondMenu(int boardNo) {
     Message.READ_NEXT_MENU.getMessage();
-    Message.CHOOSE_MENU.getMessage();
-    try {
-      int select = Integer.parseInt(br.readLine());
-      switch (select) {
-        case 1 -> update(boardNo);
-        case 2 -> delete(boardNo);
-        case 3 -> mainMenu();
-      }
-    } catch (IOException e) {
-      throw new RuntimeException(e);
+    int select = Integer.parseInt(util.inputRequired("메뉴 선택"));
+    switch (select) {
+      case 1 -> update(boardNo);
+      case 2 -> delete(boardNo);
+      case 3 -> mainMenu();
     }
   }
 
   public static void update(int searchedBoardNo) {
     int no = searchedBoardNo;
-    String title = inputRequired("제목");
-    String content = inputRequired("내용");
-    String writer = inputRequired("작성자");
+    String title = util.inputRequired("제목");
+    String content = util.inputRequired("내용");
+    String writer = util.inputRequired("작성자");
     LocalDate date = LocalDate.now();
     String query = new StringBuilder()
         .append("UPDATE board SET title = '" + title)
@@ -70,7 +64,7 @@ public class CRUD {
         .append("' where no = " + no)
         .toString();
 
-    if (confirmMenu()) {
+    if (util.confirmMenu()) {
       connect();
       processQuery.executeQuery(query);
       close();
@@ -84,7 +78,7 @@ public class CRUD {
     String query = "DELETE FROM board where no = " + searchedBoardNo;
     connect();
 
-    if (deleteCheckAgain()) {
+    if (util.deleteCheckAgain()) {
       processQuery.executeQuery(query);
       close();
       Message.DELETE_BOARD.getMessage();
@@ -96,7 +90,7 @@ public class CRUD {
   public static void clear() {
     String query = "TRUNCATE table board";
 
-    if (deleteCheckAgain()) {
+    if (util.deleteCheckAgain()) {
       connect();
       processQuery.executeQuery(query);
       close();
